@@ -39,11 +39,12 @@
   (let [out-dir (boot/tmp-dir!)
         ns-pod  (ns-tracker-pod)
         symbol-did-change? (partial -symbol-did-change? ns-pod)
-        ext-regex (re-pattern (str data-ext "$"))]
+        ext (or data-ext ".html.edn")
+        ext-regex (re-pattern (str ext "$"))]
     (-init-ns-tracker ns-pod)
     ;; task
     (boot/with-pre-wrap fs
-      (let [temp-files (boot/by-ext [(or data-ext ".html.edn")] (boot/input-files fs))
+      (let [temp-files (boot/by-ext [ext] (boot/input-files fs))
             cns-result (pod/with-eval-in ns-pod (cns))]
         (doseq [temp-file temp-files
                 :let [f             (boot/tmp-file temp-file)
