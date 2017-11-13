@@ -8,7 +8,7 @@
                  ])
 
 (require
- '[boot-create-html.core :refer [create-html]]
+ '[poyo.co.boot-create-html :refer [create-html]]
  '[pandeiro.boot-http :refer [serve]]
  '[samestep.boot-refresh :refer [refresh]]
  )

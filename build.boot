@@ -21,4 +21,4 @@
   (comp (pom) (jar) (install)))
 
 (require '[adzerk.boot-test :refer [test]]
-         '[boot-create-html.core :refer [create-html]])
+         '[poyo.co.boot-create-html :refer [create-html]])

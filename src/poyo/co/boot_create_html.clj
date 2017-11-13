@@ -1,4 +1,4 @@
-(ns boot-create-html.core
+(ns poyo.co.boot-create-html
   "Example tasks showing various approaches."
   {:boot/export-tasks true}
   (:require [boot.core :as boot :refer [deftask]]
