@@ -7,11 +7,10 @@
 
 (require
  '[poyo.co.boot-create-html :refer [create-html]]
- '[adzerk.bootlaces :refer [bootlaces! build-jar push-snapshot push-release]]
-  )
+ '[adzerk.bootlaces :refer [bootlaces! build-jar push-snapshot push-release]])
 
 (def project 'poyo.co/boot-create-html)
-(def +version+ "0.1.0")
+(def +version+ "0.1.0-SNAPSHOT")
 
 (bootlaces! +version+)
 
