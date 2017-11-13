@@ -7,7 +7,7 @@ A Boot task to generate html from edn files.
 To use this in your project, add `[poyo.co/boot-create-html "0.1.0-SNAPSHOT" :scope "boot"]` to your `:dependencies`
 and then require the task:
 
-    (require '[boot-create-html.core :refer [create-html]])
+    (require '[poyo.co.boot-create-html :refer [create-html]])
 
 Create a `.html.edn` file in `resources/` relative to where you'd like the HTML generated.
 The edn should contain **at least** a `:template key which is a symbol referenceing the function required to generate the HTML.
