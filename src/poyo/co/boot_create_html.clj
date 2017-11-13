@@ -7,16 +7,8 @@
             [clojure.string :as s]
             [clojure.java.io :as io]))
 
-;; changes function - defined within pod on task run
-(declare cns)
-
 (def processed-ns (atom #{}))
 (def processed-data (atom {}))
-
-(defn -file-modified? [f]
-  (when (< (get @processed-data (.getPath f)) (.lastModified f))
-    (swap! processed-data assoc (.getPath f) (.lastModified f))
-    true))
 
 (defn -init-ns-tracker [ns-pod]
   (let [src-paths (vec (boot/get-env :source-paths))]
@@ -29,33 +21,37 @@
        (assoc (boot/get-env) :dependencies)
        pod/make-pod))
 
+(defn -file-modified? [f]
+  (when (< (get @processed-data (.getPath f)) (.lastModified f))
+    (swap! processed-data assoc (.getPath f) (.lastModified f))
+    true))
+
 (defn -symbol-did-change? [cns-result ns-sym]
-  (some #{ns-sym}
-        cns-result))
+  (some #{ns-sym} cns-result))
 
 (deftask create-html
   "Create pages in place of .html.edn files."
   [d data-ext EXT str "The extension used for data files. defaults to .html.edn."]
-  (let [out-dir (boot/tmp-dir!)
-        ns-pod  (ns-tracker-pod)
-        symbol-did-change? (partial -symbol-did-change? ns-pod)
-        ext (or data-ext ".html.edn")
-        ext-regex (re-pattern (str ext "$"))]
+  (let [out-dir            (boot/tmp-dir!)
+        ns-pod             (ns-tracker-pod)
+        ext                (or data-ext ".html.edn")
+        ext-regex          (re-pattern (str ext "$"))]
+    ;; set up namespace tracking
     (-init-ns-tracker ns-pod)
-    ;; task
+    ;; begin task
     (boot/with-pre-wrap fs
       (let [temp-files (boot/by-ext [ext] (boot/input-files fs))
-            cns-result (pod/with-eval-in ns-pod (cns))]
+            changed-namespaces (pod/with-eval-in ns-pod (cns))]
         (doseq [temp-file temp-files
-                :let [f             (boot/tmp-file temp-file)
-                      data          (read-string (slurp f))
-                      data-path     (boot/tmp-path temp-file)
-                      template-fn   (:template data)
-                      ns-sym        (symbol (namespace template-fn))
-                      initial?      (not (get @processed-ns [ns-sym data-path]))
-                      should-build? (or initial?
-                                        (-symbol-did-change? cns-result ns-sym)
-                                        (-file-modified? f))]]
+                :let      [f             (boot/tmp-file temp-file)
+                           data          (read-string (slurp f))
+                           data-path     (boot/tmp-path temp-file)
+                           template-fn   (:template data)
+                           ns-sym        (symbol (namespace template-fn))
+                           initial?      (not (get @processed-ns [ns-sym data-path]))
+                           should-build? (or initial?
+                                             (-symbol-did-change? changed-namespaces ns-sym)
+                                             (-file-modified? f))]]
           ;; initialize data on first run
           (when initial?
             (swap! processed-ns conj [ns-sym data-path])
