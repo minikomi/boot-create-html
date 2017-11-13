@@ -10,7 +10,7 @@ and then require the task:
     (require '[boot-create-html.core :refer [create-html]])
 
 Create a `.html.edn` file in `resources/` relative to where you'd like the HTML generated.
-The edn should contain **at least** a `:template` key which is a symbol referenceing the function required to generate the HTML.
+The edn should contain **at least** a `:template key which is a symbol referenceing the function required to generate the HTML.
 
 ## License
 

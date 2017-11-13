@@ -1,0 +1,5 @@
+{:title "Cool page"
+ :weather [{:country "Japan"    :city "Tokyo"         :max 20 :min 12}
+           {:country "U.S.A."   :city "New York City" :max 12 :min 4}
+           {:country "Pakistan" :city "Islamabad"     :max 24 :min 15}]
+ :template example.core/base-template}
