@@ -31,7 +31,8 @@
 
 (deftask create-html
   "Create pages in place of .html.edn files."
-  [d data-ext EXT str "The extension used for data files. defaults to .html.edn."]
+  [d data-ext EXT str "The extension used for data files. defaults to .html.edn."
+   e every-time bool "HTML should be build every time, regardless of no changes to namespaces / data edn."]
   (let [out-dir            (boot/tmp-dir!)
         ns-pod             (ns-tracker-pod)
         ext                (or data-ext ".html.edn")
@@ -50,6 +51,7 @@
                            ns-sym        (symbol (namespace template-fn))
                            initial?      (not (get @processed-ns [ns-sym data-path]))
                            should-build? (or initial?
+                                             every-time
                                              (-symbol-did-change? changed-namespaces ns-sym)
                                              (-file-modified? f))]]
           ;; initialize data on first run
