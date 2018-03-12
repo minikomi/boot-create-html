@@ -31,12 +31,14 @@
 
 (deftask create-html
   "Create pages in place of .html.edn files."
-  [d data-ext EXT str "The extension used for data files. defaults to .html.edn."
-   e every-time bool "HTML should be build every time, regardless of no changes to namespaces / data edn."]
+  [d data-ext   EXT str "The extension used for data files. defaults to .html.edn."
+   e every-time     bool "HTML should be build every time, regardless of no changes to namespaces / data edn."
+   o out-ext    EXT str "Final extension for the outputted file"]
   (let [out-dir            (boot/tmp-dir!)
         ns-pod             (ns-tracker-pod)
         ext                (or data-ext ".html.edn")
-        ext-regex          (re-pattern (str ext "$"))]
+        ext-regex          (re-pattern (str ext "$"))
+        out-ext            (or out-ext ".html")]
     ;; set up namespace tracking
     (-init-ns-tracker ns-pod)
     ;; begin task
@@ -61,7 +63,7 @@
           (when should-build?
             (require ns-sym :reload)
             (if-let [template (ns-resolve ns-sym template-fn)]
-              (let [out-path (s/replace data-path ext-regex ".html")
+              (let [out-path (s/replace data-path ext-regex out-ext)
                     out-f    (io/file out-dir out-path)]
                 (util/info "[HTML] Building [%s] using [%s].\n" out-path template-fn)
                 (io/make-parents out-f)

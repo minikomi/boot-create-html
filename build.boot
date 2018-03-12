@@ -10,7 +10,7 @@
  '[adzerk.bootlaces :refer [bootlaces! build-jar push-snapshot push-release]])
 
 (def project 'poyo.co/boot-create-html)
-(def +version+ "0.1.1-SNAPSHOT")
+(def +version+ "0.1.2-SNAPSHOT")
 
 (bootlaces! +version+)
 
